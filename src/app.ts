@@ -1,20 +1,15 @@
 import express from "express";
-import routes from "./api";
+import loader from "@/loader";
+import config from "@/config";
 
-const app = express();
-const port = process.env.PORT ? 80 : 3000;
+async function startServer() {
+  const app = express();
 
-app.get("/status", (req, res) => {
-  res.status(200).end();
-});
+  await loader({ expressApp: app });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.set("views", __dirname + "/views");
-app.use(express.static(__dirname + "public"));
+  app.listen(config.port, () => {
+    console.log(`Server running on http://localhost:${config.port}`);
+  });
+}
 
-app.use(routes());
-
-app.listen(port, () => {
-  console.log(`server listening on http://localhost:${port}`);
-});
+startServer();
